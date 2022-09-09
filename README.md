@@ -1,47 +1,52 @@
-# Работа с базой данных SQLite в Java
+## Работа с базой данных SQLite в Java
 
-1. Скачиваем драйвер SQLite для Java по ссылке https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc 
-2. Импортируем библиотеки
-   
-`import java.sql.Connection;`   
-`import java.sql.DriverManager;`  
-`import java.sql.SQLException;`
+1. Скачиваем драйвер SQLite для Java по ссылке https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc или берем из этого репозитория. 
+2. Импортируем библиотеки `import java.sql.*;`   
+3. Я здесь все буду писать одной простыней, но весь код разделю на блоки `try-catch`, 
+которые вы потом легко разделите по классам для подключения к базе данных, 
+созданию новой таблицы, добавления записей и формирования запросов. 
 
+### Итак:
+Для подключения к базе данных (или создания новой) необходимо:
 
-3. Создаем класс для устанавления связи с базой данных
+<code>
+String url = "jdbc:sqlite:./src/main/java/org/example/test.db" //Путь к базе;  
+Connection conn = null;
+try {  
+conn = DriverManager.getConnection(url);  
+} catch (SQLException e) {  
+throw new RuntimeException(e);  
+}  
+</code>
 
-// @author sqlitetutorial.net
-  */
-  public class Connect {
-  /**
-    * Connect to a sample database
-      */
-      public static void connect() {
-      Connection conn = null;
-      try {
-      // db parameters
-      String url = "jdbc:sqlite:C:/sqlite/db/chinook.db";
-      // create a connection to the database
-      conn = DriverManager.getConnection(url);
+Создаем новую таблицу:
 
-           System.out.println("Connection to SQLite has been established.");
+<code>
+String command = "CREATE TABLE IF NOT EXISTS users (\n" +   
 
-      } catch (SQLException e) {
-      System.out.println(e.getMessage());
-      } finally {
-      try {
-      if (conn != null) {
-      conn.close();
-      }
-      } catch (SQLException ex) {
-      System.out.println(ex.getMessage());
-      }
-      }
-      }
-      /**
-    * @param args the command line arguments
-      */
-      public static void main(String[] args) {
-      connect();
-      }
-      }`
+"id INTEGER PRIMARY KEY,\n" +  
+"name TEXT NOT NULL,\n" +  
+"ip TEXT NOT NULL" +  
+");";  
+try {  
+Statement stmt = conn.createStatement();  
+stmt.execute(command);  
+} catch (SQLException e) {  
+throw new RuntimeException(e);  
+}  
+</code>
+
+Добавляем запись:
+
+for (int i = 0; i < 10; i++) {
+command = "INSERT INTO users(name,ip) VALUES(?,?);";  
+String name = "user" + i;  
+String ip = "192.168.0." + i;  
+try (PreparedStatement pstmt = conn.prepareStatement(command);) {  
+pstmt.setString(1, name);  
+pstmt.setString(2, ip);  
+pstmt.executeUpdate();  
+} catch (SQLException e) {  
+System.out.println("error: " + e);  
+}  
+}  
