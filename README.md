@@ -1,6 +1,6 @@
 ## Работа с базой данных SQLite в Java
 
-1. Скачиваем драйвер SQLite для Java по [ссылке](https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc) или берем из этого [репозитория](https://github.com/PavshinSV/SQLite_for_Java). 
+1. Скачиваем драйвер SQLite для Java по [ссылке](https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc) или берем из этого репозитория. 
 2. Импортируем библиотеки `import java.sql.*;`   
 3. Я здесь все буду писать одной простыней, но весь код разделю на блоки `try-catch`, 
 которые вы потом легко разделите по классам для подключения к базе данных, 
@@ -65,7 +65,7 @@
                 throw new RuntimeException(e);
             }
 
-В [репозитории](https://github.com/PavshinSV/SQLite_for_Java) рабочая демонстрация.
+В репозитории рабочая демонстрация.
 
 ### Спасибо за внимание!! 
 
